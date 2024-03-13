@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import Description from "./Components/Description/Description";
-import Feedback from "./Components/Feedback/Feedback";
-import Options from "./Components/Options/Options";
+import Description from "./Description/Description";
+import Feedback from "./Feedback/Feedback";
+import Options from "./Options/Options";
 
 function App() {
   const [good, setGood] = useState(localStorage.getItem("good") || 0);
