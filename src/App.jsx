@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import Description from "./Components/Description/Description";
+import Feedback from "./Components/Feedback/Feedback";
+import Options from "./Components/Options/Options";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [good, setGood] = useState(localStorage.getItem("good") || 0);
+  const [neutral, setNeutral] = useState(localStorage.getItem("neutral") || 0);
+  const [bad, setBad] = useState(localStorage.getItem("bad") || 0);
+
+  useEffect(() => {
+    localStorage.setItem("good", good);
+    localStorage.setItem("neutral", neutral);
+    localStorage.setItem("bad", bad);
+  }, [good, neutral, bad]);
+
+  const totalFeedback = good + neutral + bad;
+  const positivePercentage = totalFeedback
+    ? ((good / totalFeedback) * 100).toFixed(2)
+    : 0;
+
+  const handleReset = () => {
+    setGood(0);
+    setNeutral(0);
+    setBad(0);
+    localStorage.clear();
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Description />
+      <Options
+        good={() => setGood(Number(good) + 1)}
+        neutral={() => setNeutral(Number(neutral) + 1)}
+        bad={() => setBad(Number(bad) + 1)}
+        reset={handleReset}
+      />
+      <Feedback
+        good={good}
+        neutral={neutral}
+        bad={bad}
+        totalFeedback={totalFeedback}
+        positivePercentage={positivePercentage}
+      />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
