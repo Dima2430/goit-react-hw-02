@@ -14,7 +14,7 @@ function App() {
     localStorage.setItem("bad", bad);
   }, [good, neutral, bad]);
 
-  const totalFeedback = good + neutral + bad;
+  const totalFeedback = Number(good) + Number(neutral) + Number(bad) ;
   const positivePercentage = totalFeedback
     ? ((good / totalFeedback) * 100).toFixed(2)
     : 0;
