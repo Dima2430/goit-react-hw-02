@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Description from "./Description/Description";
 import Feedback from "./Feedback/Feedback";
 import Options from "./Options/Options";
-
+import Notification from "./Notification/Notification";
 function App() {
   const [good, setGood] = useState(localStorage.getItem("good") || 0);
   const [neutral, setNeutral] = useState(localStorage.getItem("neutral") || 0);
@@ -14,7 +14,7 @@ function App() {
     localStorage.setItem("bad", bad);
   }, [good, neutral, bad]);
 
-  const totalFeedback = Number(good) + Number(neutral) + Number(bad) ;
+  const totalFeedback = Number(good) + Number(neutral) + Number(bad);
   const positivePercentage = totalFeedback
     ? ((good / totalFeedback) * 100).toFixed(2)
     : 0;
@@ -30,18 +30,23 @@ function App() {
     <>
       <Description />
       <Options
-        good={() => setGood(Number(good) + 1)}
-        neutral={() => setNeutral(Number(neutral) + 1)}
-        bad={() => setBad(Number(bad) + 1)}
-        reset={handleReset}
-      />
-      <Feedback
-        good={good}
-        neutral={neutral}
-        bad={bad}
+        onGoodFeedback={() => setGood(Number(good) + 1)}
+        onNeutralFeedback={() => setNeutral(Number(neutral) + 1)}
+        onBadFeedback={() => setBad(Number(bad) + 1)}
+        onReset={handleReset}
         totalFeedback={totalFeedback}
-        positivePercentage={positivePercentage}
       />
+      {totalFeedback > 0 ? (
+        <Feedback
+          good={good}
+          neutral={neutral}
+          bad={bad}
+          totalFeedback={totalFeedback}
+          positivePercentage={positivePercentage}
+        />
+      ) : (
+        <Notification />
+      )}
     </>
   );
 }
