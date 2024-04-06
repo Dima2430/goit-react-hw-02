@@ -4,43 +4,51 @@ import Feedback from "./Feedback/Feedback";
 import Options from "./Options/Options";
 import Notification from "./Notification/Notification";
 function App() {
-  const [good, setGood] = useState(localStorage.getItem("good") || 0);
-  const [neutral, setNeutral] = useState(localStorage.getItem("neutral") || 0);
-  const [bad, setBad] = useState(localStorage.getItem("bad") || 0);
+  const [feedback, setFeedback] = useState({
+    good: Number(localStorage.getItem("good")) || 0,
+    neutral: Number(localStorage.getItem("neutral")) || 0,
+    bad: Number(localStorage.getItem("bad")) || 0,
+  });
 
   useEffect(() => {
-    localStorage.setItem("good", good);
-    localStorage.setItem("neutral", neutral);
-    localStorage.setItem("bad", bad);
-  }, [good, neutral, bad]);
+    localStorage.setItem("good", feedback.good);
+    localStorage.setItem("neutral", feedback.neutral);
+    localStorage.setItem("bad", feedback.bad);
+  }, [feedback]);
 
-  const totalFeedback = Number(good) + Number(neutral) + Number(bad);
+  const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
   const positivePercentage = totalFeedback
-    ? ((good / totalFeedback) * 100).toFixed(2)
+    ? ((feedback.good / totalFeedback) * 100).toFixed(2)
     : 0;
 
   const handleReset = () => {
-    setGood(0);
-    setNeutral(0);
-    setBad(0);
-    localStorage.clear();
+    setFeedback({ good: 0, neutral: 0, bad: 0 });
+    localStorage.removeItem("good");
+    localStorage.removeItem("neutral");
+    localStorage.removeItem("bad");
   };
 
   return (
     <>
       <Description />
       <Options
-        onGoodFeedback={() => setGood(Number(good) + 1)}
-        onNeutralFeedback={() => setNeutral(Number(neutral) + 1)}
-        onBadFeedback={() => setBad(Number(bad) + 1)}
+        onGoodFeedback={() =>
+          setFeedback({ ...feedback, good: feedback.good + 1 })
+        }
+        onNeutralFeedback={() =>
+          setFeedback({ ...feedback, neutral: feedback.neutral + 1 })
+        }
+        onBadFeedback={() =>
+          setFeedback({ ...feedback, bad: feedback.bad + 1 })
+        }
         onReset={handleReset}
         totalFeedback={totalFeedback}
       />
       {totalFeedback > 0 ? (
         <Feedback
-          good={good}
-          neutral={neutral}
-          bad={bad}
+          good={feedback.good}
+          neutral={feedback.neutral}
+          bad={feedback.bad}
           totalFeedback={totalFeedback}
           positivePercentage={positivePercentage}
         />
